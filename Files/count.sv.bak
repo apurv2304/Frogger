@@ -1,0 +1,66 @@
+module count (clk, reset, up, finalRow, display);
+    input logic clk, reset, up;
+    input logic [7:0] finalRow;
+    output logic display;
+    logic won
+
+    enum logic [2:0] {zero = 3'b000, one = 3'b001, two = 3'b010,
+                      three = 3'b011, four = 3'b100, five = 3'b101} ps, ns;
+    
+    assign won = up & (topRow != 8'b0);
+
+    always_comb begin
+        case(ps)
+            zero: if (won) begin
+                    ns <= one;
+                    display <= 7'b1111001;
+                  end
+                  else begin
+                    ns <= ps;
+                    display <= 7'b1000000;
+                  end
+            one: if (won) begin
+                    ns <= two;
+                    display <= 7'b0100100;
+                  end
+                  else begin
+                    ns <= ps;
+                    display <= 7'b1111001;
+                  end
+            two: if (won) begin
+                    ns <= three;
+                    display <= 7'b0110000;
+                  end
+                  else begin
+                    ns <= ps;
+                    display <= 7'b0100100;
+                  end
+            three: if (won) begin
+                    ns <= four;
+                    display <= 7'b0011001;
+                  end
+                  else begin
+                    ns <= ps;
+                    display <= 7'b0110000;
+                  end
+            four: if (won) begin
+                    ns <= five;
+                    display <= 7'b0010010;
+                  end
+                  else begin
+                    ns <= ps;
+                    display <= 7'b0011001;
+                  end
+        endcase
+    end
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            ps <= zero;
+        end
+        else begin
+            ps <= ns;
+        end
+    end
+
+endmodule
+

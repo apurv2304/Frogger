@@ -1,0 +1,54 @@
+module obstacle(clk, reset, resetGield, pause, obsPrev, obsNext, level, random);
+    input logic clk, reset, resetGame, pause;
+    inout logic [9:0] random;
+    input logic [7:0][7:0] obsPrev;
+    output logic [7:0] obsNext; 
+    input logic[3:0] level
+    logic enable, level1, level2, level3, level4;
+	
+
+    always_comb begin
+		if (level == 4'b0010) begin
+			enable = level2;
+		end else if (level == 4'b0100) begin
+			enable = level3;
+		end else if (level == 4'b1000) begin
+			enable = level4;
+		end else begin
+			enable = level1;
+		end
+    end
+	
+	// Use this for simulation
+	//assign enable = level1;
+	
+	enable1 e1(.clk(clk), .enable(level1));
+	enable2 e2(.clk(clk), .enable(level2));
+	enable3 e3(.clk(clk), .enable(level3));
+	enable4 e4(.clk(clk), .enable(level4));
+	
+    always_ff @(posedge clk) begin
+        if (reset | resetGame) begin
+            obsNext <= {
+                        {8'b10110001};
+                        {8'b00010100};
+                        {8'b01011000};
+                        {8'b11000101};
+                        {8'b00001010};
+                        {8'b01110000};
+                        {8'b10000010};
+                        {8'b00000100};
+                       };
+        end
+        else if (pause) begin
+            obsNext <= obsPrev;
+        end
+        else if (enable) begin
+            for (i = 0; i < 7; i++) begin 
+                obsNext[i] <= {random[i], obsPrev[i][7:1]};
+            end
+        else begin
+            obsNext <= obsPrev;
+        end
+    end
+endmodule

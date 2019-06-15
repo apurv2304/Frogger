@@ -1,0 +1,73 @@
+module enable1 (clk, enable);
+
+	input logic clk;
+	output logic enable;
+	logic [16:0] num = 17'b00000000000000001;
+	
+	always @(posedge clk)
+		if (num == 17'b00000000000000000) begin
+			enable <= 1'b1;
+			num <= 17'b00000000000000001;
+		end
+		else begin
+			enable <= 1'b0;
+			num <= num + 17'b00000000000000001;
+		end
+		
+endmodule
+
+module enable2 (clk, enable);
+
+	input logic clk;
+	output logic enable;
+	logic [15:0] num = 16'b0000000000000000;
+	
+	always @(posedge clk)
+		if (num == 16'b0000000000000000) begin
+			enable <= 1'b1;
+			num <= 16'b0000000000000001;
+		end
+		else begin
+			enable <= 1'b0;
+			num <= num + 16'b0000000000000001;
+		end
+		
+endmodule
+
+module enable3 (clk, enable);
+
+	input logic clk;
+	output logic enable;
+	logic [14:0] num = 15'b000000000000000;
+	
+	always @(posedge clk)
+		if (num == 15'b000000000000000) begin
+			enable <= 1'b1;
+			num <= 15'b00000000000001;
+		end
+		else begin
+			enable <= 1'b0;
+			num <= num + 15'b00000000000001;
+		end
+		
+endmodule
+
+module enable4 (clk, enable);
+
+	input logic clk;
+	output logic enable;
+	logic [11:0] num = 11'b000000000000;
+	
+	always @(posedge clk)
+		if (num == 11'b000000000000) begin
+			enable <= 1'b1;
+			num <= 11'b000000000001;
+		end
+		else begin
+			enable <= 1'b0;
+			num <= num + 11'b000000000001;
+		end
+		
+endmodule
+
+

@@ -1,0 +1,12 @@
+module meta (clk, in, out);
+
+	input logic in, clk;
+	input logic out;
+	
+	logic temp;
+	
+	always_ff @(posedge clk) begin
+	  temp <= in;
+	  out <= in;
+	 end 
+endmodule

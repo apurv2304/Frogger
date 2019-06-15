@@ -1,0 +1,59 @@
+module frog(clk, reset, resetGame, pause, left, right, up, down, frogPrev, frogNext);
+    input logic clk, left, right, up, down, reset, resetGame, pause;
+    input logic [7:0][7:0] frogPrev;
+    output logic [7:0] frogNext;
+
+    always_ff @(posedge clk) begin
+        if (reset | resetGame | (up & (frogPrev[7] != 8'b0))) begin
+            frogNext <= {{8'b0},
+                         {8'b0},
+                         {8'b0},
+                         {8'b0},
+                         {8'b0},
+                         {8'b0},
+                         {8'b0},
+                         {8'b0},
+                         };
+        end
+        else if (pause | (down & (frogPrev[0] == 8'b00000001)) begin 
+            frogNext <= frogPrev;
+        end
+        else if (down) begin
+            frogNext[7] <= 8'b0;
+            frogNext[6:0] <= frogPrev[7:1];
+        end 
+        else if (up) begin
+            frogNext[0] <= 8'b0;
+            frogNext[7:1] <= frogPrev[6:0];
+        end
+        else if (left & (frogPrev[0][7] | frogPrev[1][7] | frogPrev[2][7] | 
+                         frogPrev[3][7] | frogPrev[4][7] | frogPrev[5][7] |
+                         frogPrev[6][7] | frogPrev[7][7])) begin
+            for (i = 0; i < 7; i++) begin
+                frogNext[i] <= {frogPrev[i][6:0], frogPrev[i][7]};
+            end
+        end
+        else if (left) begin
+            for (i = 0; i < 7; i++) begin
+                frogNext[i] <= {frogPrev[i][6:0], 1'b0};
+            end
+        end
+        else if (right & (frogPrev[0][0] | frogPrev[1][0] | frogPrev[2][0] | 
+                          frogPrev[3][0] | frogPrev[4][0] | frogPrev[5][0] |
+                          frogPrev[6][0] | frogPrev[7][0])) begin
+            for (i = 0; i < 7; i++) begin
+                frogNext[i] <= {frogPrev[i][0], frogPrev[i][7:1]};
+            end
+        end
+        else if (right) begin
+            for (i = 0; i < 7; i++) begin
+                frogNext[i] <= {1'b0, frogPrev[i][7:1]};
+            end
+        else begin
+            frogNext <= frogPrev;
+        end
+    end
+endmodule
+    
+    
+

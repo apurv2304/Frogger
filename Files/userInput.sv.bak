@@ -1,0 +1,74 @@
+// Apurv Goel
+// EE 271
+// NetId - ag2304
+// Date - 05/08/2019
+
+
+module userInput(clk, reset, w, out);
+
+	input logic clk, reset;
+   input logic w;
+	output logic out;
+
+	 // State variables.
+	enum logic {A, B} ps, ns;
+
+	// Next State logic
+	always_comb begin
+		case (ps)
+			A: if (~w) begin	  ns = A;
+		      end 	
+				else begin       ns = B;
+				end	
+			B: if (~w)          ns = A;
+		      end 	
+				else begin       ns = B;
+				end
+		endcase
+	end
+	
+	// Output logic - could also be another always, or part of above block.
+	assign out = w & (~ps);
+	
+	// DFFs
+	always_ff @(posedge clk) begin
+		if (reset)
+			ps <= A;
+		else
+			ps <= ns;
+	end
+endmodule
+
+// Test the functionality of hazardlight
+module hazardlight_testbench();
+
+	logic clk, reset, w, out;
+	
+	userInput dut (clk, reset, w, out);
+	
+	// Set up the clock.
+	parameter CLOCK_PERIOD=100;
+
+	initial begin
+		clk <= 0;
+		forever #(CLOCK_PERIOD/2) clk <= ~clk;
+	end
+	
+	// Set up the inputs to the design. Each line is a clock cycle.
+	initial begin
+	   reset <= 1; 		             @(posedge clk);
+		w <= 0;                        @(posedge clk);
+		reset <= 0;                    @(posedge clk);
+												 @(posedge clk);
+		w <= 1;								 @(posedge clk);
+												 @(posedge clk);
+												 @(posedge clk);
+		w <= 0;								 @(posedge clk);
+												 @(posedge clk);
+												 @(posedge clk);
+		w <= 1;								 @(posedge clk);
+												 @(posedge clk);			 
+												 @(posedge clk);
+	$stop; // End the simulation.
+	end
+endmodule

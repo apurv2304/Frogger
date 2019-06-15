@@ -1,0 +1,47 @@
+module victory (clk, reset, L, R, LL, RL, out);
+	input logic clk, reset;
+	
+	// L is true when left key is pressed, R is true when the right key
+	// is pressed, NL is true when the light on the left is on, and NR
+	// is true when the light on the right is on.
+	
+	input logic L, R, LL, RL;
+	
+	// when lightOn is true, the center light should be on.
+	output logic[6:0] out;
+		
+	enum logic[6:0] {A = 7'b1000000, B = 7'b1111001, C = 7'b0100100} ps, ns;
+
+	// Next State logic
+	always_comb begin
+		case (ps)
+			A: if (LL & ~R & L) begin      ns = C;
+				end 	
+				else if (RL & R & ~L) begin ns = B;
+				end
+				else begin                  ns = A;
+				end
+			B: begin                       ns = B;
+		      end 	
+			C: begin                       ns = C;
+				end
+			default: 
+			       
+
+		endcase
+	end
+	
+	// Output logic - could also be another always, or part of above block.
+	assign out = ns;
+	
+	// DFFs
+	always_ff @(posedge clk) begin
+		if (reset)
+			ps <= A;
+		else
+			ps <= ns;
+	end
+endmodule
+
+
+	

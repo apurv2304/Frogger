@@ -1,0 +1,17 @@
+module lose (clk, obsMove, frogMove, resetGame); 
+    input logic clk;
+    input logic [7:0][7:0] obsMove, frogMove;
+    output logic resetGame;
+
+    always_ff @(posedge clk)
+        if (((obsMove[0] & frogMove[0]) != 8'b00000000) | ((obsMove[0] & frogMove[0]) != 8'b00000000)
+            ((obsMove[0] & frogMove[0]) != 8'b00000000) | ((obsMove[0] & frogMove[0]) != 8'b00000000)
+            ((obsMove[0] & frogMove[0]) != 8'b00000000) | ((obsMove[0] & frogMove[0]) != 8'b00000000))
+        begin
+            resetGame <= 1'b1;
+        end
+        else begin
+            resetGame <= 1'b0;
+        end
+    end
+endmodule
